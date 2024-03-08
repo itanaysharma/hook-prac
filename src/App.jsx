@@ -5,7 +5,7 @@ import "./App.css";
 function App() {
   const [render, setRender] = useState(true);
   useEffect(() => {
-    setTimeout(() => {
+    setInterval(() => {
       setRender(false);
     }, 5000);
   }, []);
