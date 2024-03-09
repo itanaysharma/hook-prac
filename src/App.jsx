@@ -6,8 +6,9 @@ function App() {
   const [render, setRender] = useState(true);
   useEffect(() => {
     setInterval(() => {
-      setRender(false);
-    }, 5000);
+      // Learn about closer
+      setRender((render) => !render);
+    }, 1000);
   }, []);
   return <>{render ? <MyComponent></MyComponent> : <div></div>}</>;
 }
