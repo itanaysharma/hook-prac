@@ -1,29 +1,32 @@
-import React, { useEffect, useState } from "react";
-
-import "./App.css";
+import { useEffect, useState } from "react";
+import axios from "axios";
 
 function App() {
-  const [render, setRender] = useState(true);
+  const [todos, setTodos] = useState([]);
+
   useEffect(() => {
-    setInterval(() => {
-      // Learn about closer
-      setRender((render) => !render);
-    }, 1000);
+    axios.get("https://sum-server.100xdevs.com/todos").then((res) => {
+      setTodos(res.data.todos);
+    });
   }, []);
-  return <>{render ? <MyComponent></MyComponent> : <div></div>}</>;
+
+  return (
+    <>
+      {todos.map((todo) => (
+        <Track todo={todo} />
+      ))}
+    </>
+  );
 }
 
-function MyComponent() {
-  useEffect(() => {
-    console.error("Component mounted");
-    // Perform setup or data fetching here
-
-    return () => {
-      console.log("component unmounted"); //Learn more about function return in useEffect
-      // Cleanup code (similar to componentWillUnmount)
-    };
-  }, []);
-  return <div>From inside my component</div>;
-  // Render UI
+function Track({ todo }) {
+  return (
+    <div>
+      {todo.title}
+      <br />
+      {todo.description}
+    </div>
+  );
 }
+
 export default App;
