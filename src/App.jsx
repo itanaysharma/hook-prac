@@ -1,52 +1,34 @@
 import { useEffect, useState } from "react";
-import useSWR from "swr"; //this can be used directly to do the same job https://swr.vercel.app/
 import axios from "axios";
-function useTodos(n) {
-  const [todos, setTodos] = useState([]);
-  const [loading, setLoading] = useState(true);
+function useIsOnline() {
+  const [isOnline, setIsOnline] = useState(window.navigator.onLine);
   useEffect(() => {
-    const value = setInterval(() => {
-      axios.get("https://sum-server.100xdevs.com/todos").then((res) => {
-        setTodos(res.data.todos);
-        setLoading(false);
-      });
-    }, n * 1000);
-    axios.get("https://sum-server.100xdevs.com/todos").then((res) => {
-      // added because we want to show something on the first attempt
-      setTodos(res.data.todos);
-      setLoading(false);
+    window.addEventListener("online", () => {
+      setIsOnline(true);
     });
-
-    return () => {
-      closeInterval(value);
-    };
-  }, [n]);
-  return { todos: todos, loading: loading };
+    window.addEventListener("offline", () => {
+      setIsOnline(false);
+    });
+  }, []);
+  return isOnline;
 }
 
 function App() {
-  const { todos, loading } = useTodos(5);
-
-  if (loading) {
-    return <div>Loading ..</div>;
+  const isOnline = useIsOnline();
+  if (isOnline) {
+    return "You are online";
   }
-  return (
-    <>
-      {todos.map((todo) => (
-        <Track todo={todo} />
-      ))}
-    </>
-  );
+  return "You are offline";
 }
 
-function Track({ todo }) {
-  return (
-    <div>
-      {todo.title}
-      <br />
-      {todo.description}
-    </div>
-  );
-}
+// function Track({ todo }) {
+//   return (
+//     <div>
+//       {todo.title}
+//       <br />
+//       {todo.description}
+//     </div>
+//   );
+// }
 
 export default App;
