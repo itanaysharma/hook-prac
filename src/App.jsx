@@ -1,34 +1,30 @@
 import { useEffect, useState } from "react";
-import axios from "axios";
-function useIsOnline() {
-  const [isOnline, setIsOnline] = useState(window.navigator.onLine);
+
+const useMousePointer = () => {
+  const [position, setPosition] = useState({ x: 0, y: 0 });
+
+  const handleMouseMove = (e) => {
+    setPosition({ x: e.clientX, y: e.clientY });
+  };
+
   useEffect(() => {
-    window.addEventListener("online", () => {
-      setIsOnline(true);
-    });
-    window.addEventListener("offline", () => {
-      setIsOnline(false);
-    });
+    window.addEventListener("mousemove", handleMouseMove);
+    return () => {
+      window.removeEventListener("mousemove", handleMouseMove);
+    };
   }, []);
-  return isOnline;
-}
+
+  return position;
+};
 
 function App() {
-  const isOnline = useIsOnline();
-  if (isOnline) {
-    return "You are online";
-  }
-  return "You are offline";
-}
+  const mousePointer = useMousePointer();
 
-// function Track({ todo }) {
-//   return (
-//     <div>
-//       {todo.title}
-//       <br />
-//       {todo.description}
-//     </div>
-//   );
-// }
+  return (
+    <>
+      Your mouse position is {mousePointer.x} {mousePointer.y}
+    </>
+  );
+}
 
 export default App;
